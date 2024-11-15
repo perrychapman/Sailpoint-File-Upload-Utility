@@ -172,16 +172,71 @@ Each app folder must contain a `config.json` file to define the file processing 
 
 ### Key Features
 
-- **Data Trimming**: Supports trimming rows and columns from imported files.
-- **Role Assignment**: Assign roles (`Admin` or `User`) based on specified column values.
-- **File Processing**: Processes CSV, Excel, and TXT files.
-- **SailPoint Upload**: Uses APIs to upload processed files.
-- **File Archival**: Automatically archives original and processed files.
+- **Data Trimming**: The script trims rows and columns from the imported files based on the `config.json` settings.
+- **Role Assignment**: Assigns roles (`Admin` or `User`) based on values specified in the `adminColumnName` and `adminColumnValue` fields in `config.json`.
+- **File Processing**: Processes CSV, Excel, and TXT files placed in the respective app folders.
+- **SailPoint Upload**: Uploads processed files to SailPoint using the SailPoint File Upload Utility JAR.
+- **File Archival**: Automatically archives both the original and processed files in an `Archive` folder within each app directory.
+
+### Script Workflow
+
+1. **Setup Directories and Configurations**:
+   - The `DirectoryCreateScript.ps1` must be run first to set up the directory structure and create necessary configurations.
+   - A `config.json` file is required in each app directory to define the behavior for processing files.
+
+2. **File Placement**:
+   - The user must place the file to process (CSV, Excel, or TXT) in the `Import` folder for the specific app. 
+   - For example:
+     ```
+     C:\Powershell\FileUploadUtility\Import\<AppName>     ```
+   - Only the most recently modified file in each app folder will be processed.
+
+3. **File Processing**:
+   - The script reads and trims the file based on the settings in `config.json`.
+   - Specific columns are dropped, merged, or renamed as per the configuration.
+   - If group types are specified, entitlements are grouped and prepared for upload.
+
+4. **File Upload**:
+   - If the `isUpload` flag in `config.json` is set to `true`, the script will use the SailPoint File Upload Utility JAR to upload the processed file to the configured source in SailPoint.
+
+5. **Archival**:
+   - The original file is moved to the `Archive` subdirectory within the app folder.
+   - The processed file is also archived for record-keeping.
+
+6. **Logging**:
+   - Logs are maintained at two levels:
+     - **Execution Logs**: A global log file (`ExecutionLog_<date>.csv`) is stored in the directory specified in `settings.json` (e.g., `ExecutionLogDir`).
+     - **App-Specific Logs**: Each app folder contains a `Log` subdirectory, where logs for the processing and upload tasks are saved.
+     - New logs will be created for each day that the script runs at both the Execution and App Log levels.
+
+   Example log file location for an app:
+   ```
+   C:\Powershell\FileUploadUtility\Import\<AppName>\Log   ```
+
+### User Actions Required
+
+1. **Place Files**:
+   - The user must place the input file (CSV, Excel, or TXT) in the app folder under the `Import` directory.
+
+2. **Verify Configurations**:
+   - Ensure the `config.json` for each app is correctly configured before running the `FileUploadScript.ps1`.
+
+3. **Monitor Logs**:
+   - After running the script, check the logs in the `Log` subdirectory of each app folder for details about file processing and upload status.
+   - Review the global execution log for an overview of the script's performance and errors.
+
+4. **Archival Maintenance**:
+   - Processed and original files are archived automatically, but the user should periodically clean up the `Archive` folder to save space.
+
+5. **Re-run as Needed**:
+   - The script can be re-run to process newly added files or to retry uploads for failed files.
+
+---
 
 ### Logs
 
 - **Execution Logs**: Stored in the `ExecutionLogDir` specified in `settings.json`.
-- **App Logs**: Specific to each app directory, stored in the `Log` subdirectory.
+- **App Logs**: Specific to each app directory, stored in the `AppFolder\Log` subdirectory.
 
 ---
 
