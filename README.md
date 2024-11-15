@@ -61,9 +61,9 @@ This document provides detailed instructions for setting up and running the `Dir
 
    ```json
    {
-       "ParentDirectory": "C:\Powershell\FileUploadUtility",
-       "AppFolder": "C:\Powershell\FileUploadUtility\Import",
-       "FileUploadUtility": "C:\Powershell\sailpoint-file-upload-utility-4.1.0.jar",
+       "ParentDirectory": "C:\\Powershell\\FileUploadUtility",
+       "AppFolder": "C:\\Powershell\\FileUploadUtility\\Import",
+       "FileUploadUtility": "C:\\Powershell\\sailpoint-file-upload-utility-4.1.0.jar",
        "ClientSecret": "YourSecretHere",
        "ClientID": "YourClientIDHere",
        "tenant": "YourTenantHere",
